@@ -1,0 +1,72 @@
+# from (2025-10-23): https://raw.githubusercontent.com/wg-easy/wg-easy/master/docker-compose.yml
+
+name: ${PROJECT_NAME}
+
+volumes:
+  etc_wireguard:
+  caddy_config:
+  caddy_data:
+
+services:
+  caddy:
+    container_name: ${PROJECT_NAME}-caddy
+    image: caddy:2.10.2-alpine
+    # publish everything you deem necessary
+    environment:
+      # These must be in .env, used in 'ports' section
+      - CLIENT_HTTP_PORT
+      - CLIENT_HTTPS_PORT
+      # Specifies host URI to reverse proxy to
+      - WG_EASY_URI=http://wg-easy
+    ports:
+      - '2019:2019/tcp'  # admin portal
+      # - '80:80/tcp'
+      # - '443:443/tcp'
+      # - '443:443/udp'
+      # testing: 4757 is ASCII for wg
+      - '${CLIENT_HTTP_PORT}:${CLIENT_HTTP_PORT}/tcp'
+      - '${CLIENT_HTTPS_PORT}:${CLIENT_HTTPS_PORT}/tcp'
+      - '${CLIENT_HTTPS_PORT}:${CLIENT_HTTPS_PORT}/udp'
+    networks:
+      - caddy
+    restart: unless-stopped
+    volumes:
+      - './Caddyfile:/etc/caddy/Caddyfile:ro'
+      - caddy_config:/config
+      - caddy_data:/data
+
+  wg-easy:
+    container_name: ${PROJECT_NAME}-wg-easy
+    image: ghcr.io/wg-easy/wg-easy:15
+    depends_on: 
+      - caddy
+    environment:
+      # Caddy reverse-proxy port
+      - PORT=80
+      # Only route internal VPN subnet; no Internet traffic
+      - WG_ALLOWED_IPS=10.8.0.0/24
+      # Allow wg0 traffic between clients and to host, block routing to outside
+      - WG_PRE_UP=iptables -A FORWARD -i wg0 -j ACCEPT; iptables -A FORWARD -o wg0 -j ACCEPT; iptables -A OUTPUT -o wg0 -d 10.8.0.0/24 -j ACCEPT
+      - WG_POST_DOWN=iptables -D FORWARD -i wg0 -j ACCEPT; iptables -D FORWARD -o wg0 -j ACCEPT; iptables -D OUTPUT -o wg0 -d 10.8.0.0/24 -j ACCEPT
+    networks:
+      caddy:
+    volumes:
+      - etc_wireguard:/etc/wireguard
+      - /lib/modules:/lib/modules:ro
+    ports:
+      - "51820:51820/udp"
+      # NOTE: http server now reverse-proxied
+    restart: unless-stopped
+    cap_add:
+      - NET_ADMIN
+      - SYS_MODULE
+    sysctls:
+      - net.ipv4.ip_forward=1
+      - net.ipv4.conf.all.src_valid_mark=1
+      - net.ipv6.conf.all.disable_ipv6=0
+      - net.ipv6.conf.all.forwarding=1
+      - net.ipv6.conf.default.forwarding=1
+
+networks:
+  caddy:
+    name: caddy
