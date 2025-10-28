@@ -101,3 +101,6 @@ iptables ${ACTION_FLAG} FORWARD -i wg0 -o eth0 -j ACCEPT
 iptables ${ACTION_FLAG} FORWARD -i eth0 -o wg0 -j ACCEPT
 
 iptables -t nat ${ACTION_FLAG} POSTROUTING -s 10.8.0.0/24 -o eth0 -j MASQUERADE
+
+# drop any unexpected traffic on VPN network
+iptables ${ACTION_FLAG} INPUT -i wg0 -j DROP
