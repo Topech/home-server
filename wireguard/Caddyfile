@@ -5,19 +5,29 @@
 	https_port {$CLIENT_HTTPS_PORT:443}
 }
 
+# === wg-easy: http ===
 http://localhost {
 	# # NOTE: wg-easy can't do http anyways
  	# reverse_proxy wg-easy:80
  	redir https://{host}{uri}
 }
 
+# === wg-easy: https ===
 # NOTE: cant do IP addresses with default tls, maybe with lets encrypt?
-# https://localhost https://192.168.1.10 https://123.50.134.19 {
+# https://10.8.0.1 {
 # https://123.50.134.19 {
 https://localhost {
 	tls internal
 	# tls internal {
 	# 	on_demand
 	# }
-	reverse_proxy {$WG_EASY_URI}:80
+	reverse_proxy wg-easy:80
+}
+
+# === obsidian-livesync ===
+http://localhost:5985,
+http://10.8.0.1:5985,
+http://172.17.0.1:5985,  # dockers internal
+http://host.docker.internal:5985 {
+	reverse_proxy host.docker.internal:5984
 }

@@ -20,15 +20,14 @@ services:
       - WG_EASY_URI=http://wg-easy
     ports:
       - '2019:2019/tcp'  # admin portal
-      # - '80:80/tcp'
-      # - '443:443/tcp'
-      # - '443:443/udp'
-      # testing: 4757 is ASCII for wg
       - '${CLIENT_HTTP_PORT}:${CLIENT_HTTP_PORT}/tcp'
       - '${CLIENT_HTTPS_PORT}:${CLIENT_HTTPS_PORT}/tcp'
       - '${CLIENT_HTTPS_PORT}:${CLIENT_HTTPS_PORT}/udp'
+      - '5985:5985'
     networks:
       - caddy
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
     restart: unless-stopped
     volumes:
       - './Caddyfile:/etc/caddy/Caddyfile:ro'
@@ -37,25 +36,26 @@ services:
 
   wg-easy:
     container_name: ${PROJECT_NAME}-wg-easy
-    image: ghcr.io/wg-easy/wg-easy:15
+    build:
+      context: "wg-easy"
+      dockerfile: "Dockerfile"
     depends_on: 
       - caddy
     environment:
       # Caddy reverse-proxy port
       - PORT=80
-      # Only route internal VPN subnet; no Internet traffic
+      # for new clients: Only route internal VPN subnet; no Internet traffic
       - WG_ALLOWED_IPS=10.8.0.0/24
-      # Allow wg0 traffic between clients and to host, block routing to outside
-      - WG_PRE_UP=iptables -A FORWARD -i wg0 -j ACCEPT; iptables -A FORWARD -o wg0 -j ACCEPT; iptables -A OUTPUT -o wg0 -d 10.8.0.0/24 -j ACCEPT
-      - WG_POST_DOWN=iptables -D FORWARD -i wg0 -j ACCEPT; iptables -D FORWARD -o wg0 -j ACCEPT; iptables -D OUTPUT -o wg0 -d 10.8.0.0/24 -j ACCEPT
     networks:
       caddy:
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
     volumes:
       - etc_wireguard:/etc/wireguard
       - /lib/modules:/lib/modules:ro
     ports:
       - "51820:51820/udp"
-      # NOTE: http server now reverse-proxied
+      # "80:80"  # NOTE: http server now reverse-proxied
     restart: unless-stopped
     cap_add:
       - NET_ADMIN
@@ -66,7 +66,14 @@ services:
       - net.ipv6.conf.all.disable_ipv6=0
       - net.ipv6.conf.all.forwarding=1
       - net.ipv6.conf.default.forwarding=1
+    develop:
+      watch:
+        - action: "restart"
+          path: "Caddyfile"
+        - action: "rebuild"
+          path: "wg-easy"
+
 
 networks:
   caddy:
-    name: caddy
+    name: ${PROJECT_NAME}-caddy
