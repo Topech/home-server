@@ -26,8 +26,6 @@ https://localhost {
 
 # === obsidian-livesync ===
 http://localhost:5985,
-http://10.8.0.1:5985,
-http://172.17.0.1:5985,  # dockers internal
-http://host.docker.internal:5985 {
+http://10.8.0.1:5985 {
 	reverse_proxy host.docker.internal:5984
 }
