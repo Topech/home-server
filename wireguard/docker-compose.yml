@@ -10,20 +10,22 @@ volumes:
 services:
   caddy:
     container_name: ${PROJECT_NAME}-caddy
-    image: caddy:2.10.2-alpine
+    image: caddybuilds/caddy-cloudflare:2.10.2-alpine
     # publish everything you deem necessary
     environment:
       # These must be in .env, used in 'ports' section
       - CLIENT_HTTP_PORT
       - CLIENT_HTTPS_PORT
-      # Specifies host URI to reverse proxy to
-      - WG_EASY_URI=http://wg-easy
+    env_file: "secrets.env"
     ports:
       - '2019:2019/tcp'  # admin portal
       - '${CLIENT_HTTP_PORT}:${CLIENT_HTTP_PORT}/tcp'
       - '${CLIENT_HTTPS_PORT}:${CLIENT_HTTPS_PORT}/tcp'
       - '${CLIENT_HTTPS_PORT}:${CLIENT_HTTPS_PORT}/udp'
-      - '5985:5985'
+      # for couchdb
+      - '5985:5985/tcp'
+      # for jellyfin
+      - '7074:7074/tcp'
     networks:
       - caddy
     extra_hosts:
@@ -33,6 +35,10 @@ services:
       - './Caddyfile:/etc/caddy/Caddyfile:ro'
       - caddy_config:/config
       - caddy_data:/data
+    develop:
+      watch:
+        - action: "restart"
+          path: "Caddyfile"
 
   wg-easy:
     container_name: ${PROJECT_NAME}-wg-easy
@@ -68,8 +74,6 @@ services:
       - net.ipv6.conf.default.forwarding=1
     develop:
       watch:
-        - action: "restart"
-          path: "Caddyfile"
         - action: "rebuild"
           path: "wg-easy"
 
