@@ -29,8 +29,10 @@ https://localhost {
 }
 
 # === obsidian-livesync ===
-http://localhost:5985,
-http://10.8.0.1:5985 {
+# NOTE: cannot have http and https on same port
+# http://localhost:5985,
+# http://10.8.0.1:5985 {
+https://vpn.grumpy-gnome.club:5985 {
 	reverse_proxy host.docker.internal:5984
 }
 
