@@ -17,9 +17,6 @@ http://localhost {
 }
 
 # === wg-easy: https ===
-# NOTE: cant do IP addresses with default tls, maybe with lets encrypt?
-# https://10.8.0.1 {
-# https://123.50.134.19 {
 https://localhost {
 	tls internal
 	# tls internal {
@@ -29,13 +26,13 @@ https://localhost {
 }
 
 # === obsidian-livesync ===
-# NOTE: cannot have http and https on same port
-# http://localhost:5985,
-# http://10.8.0.1:5985 {
+https://localhost:5985,
 https://vpn.grumpy-gnome.club:5985 {
 	reverse_proxy host.docker.internal:5984
 }
 
+https://localhost:7074,
+https://vpn.grumpy-gnome.club:7074,
 https://grumpy-gnome.club:7074 {
 	reverse_proxy host.docker.internal:8096
 }
