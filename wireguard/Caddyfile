@@ -36,3 +36,9 @@ https://vpn.grumpy-gnome.club:7074,
 https://grumpy-gnome.club:7074 {
 	reverse_proxy host.docker.internal:8096
 }
+
+
+# === vaultwarden ===
+https://vpn.grumpy-gnome.club:8687 {
+	reverse_proxy host.docker.internal:18687
+}

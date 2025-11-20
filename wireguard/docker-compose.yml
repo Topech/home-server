@@ -26,6 +26,8 @@ services:
       - '5985:5985/tcp'
       # for jellyfin
       - '7074:7074/tcp'
+      # for vaultwarden
+      - '8687:8687/tcp'
     networks:
       - caddy
     extra_hosts:
