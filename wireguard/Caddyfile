@@ -15,6 +15,7 @@
 # }
 
 # === wg-easy: https ===
+https://host.docker.internal:47571,
 https://localhost:47571 {
 	tls internal
 	# tls internal {
@@ -29,6 +30,8 @@ https://vpn.grumpy-gnome.club:5985 {
 	reverse_proxy host.docker.internal:5984
 }
 
+
+# === jellyfin ===
 https://localhost:7074,
 https://vpn.grumpy-gnome.club:7074,
 https://grumpy-gnome.club:7074 {
@@ -40,3 +43,11 @@ https://grumpy-gnome.club:7074 {
 https://vpn.grumpy-gnome.club:8687 {
 	reverse_proxy host.docker.internal:18687
 }
+
+
+# === grafana: https ===
+https://localhost:7170,
+https://vpn.grumpy-gnome.club:7170 {
+	reverse_proxy host.docker.internal:3000
+}
+
