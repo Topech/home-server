@@ -26,6 +26,8 @@ services:
       - '8687:8687/tcp'
       # for grafana (gf = 7170 ascii)
       - '7170:7170/tcp'
+      # for prometheus (pr = 5052 ascii)
+      - '5052:5052/tcp'
     networks:
       - caddy
     extra_hosts:

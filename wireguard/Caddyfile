@@ -45,9 +45,15 @@ https://vpn.grumpy-gnome.club:8687 {
 }
 
 
-# === grafana: https ===
+# === grafana ===
 https://localhost:7170,
 https://vpn.grumpy-gnome.club:7170 {
 	reverse_proxy host.docker.internal:3000
+}
+
+# === prometheus ===
+https://localhost:5052,
+https://vpn.grumpy-gnome.club:5052 {
+	reverse_proxy host.docker.internal:9090
 }
 
