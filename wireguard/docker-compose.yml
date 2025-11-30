@@ -12,21 +12,17 @@ services:
     container_name: ${PROJECT_NAME}-caddy
     image: caddybuilds/caddy-cloudflare:2.10.2-alpine
     # publish everything you deem necessary
-    environment:
-      # These must be in .env, used in 'ports' section
-      - CLIENT_HTTP_PORT
-      - CLIENT_HTTPS_PORT
     env_file: "secrets.env"
     ports:
-      - '2019:2019/tcp'  # admin portal
-      - '${CLIENT_HTTP_PORT}:${CLIENT_HTTP_PORT}/tcp'
-      - '${CLIENT_HTTPS_PORT}:${CLIENT_HTTPS_PORT}/tcp'
-      - '${CLIENT_HTTPS_PORT}:${CLIENT_HTTPS_PORT}/udp'
+      # caddy admin portal
+      - '2019:2019/tcp'
+     # wg-easy (wg = 4757 ascii)
+      - '47571:47571/tcp'
       # for couchdb
       - '5985:5985/tcp'
-      # for jellyfin
+      # for jellyfin (jf = 7074 ascii)
       - '7074:7074/tcp'
-      # for vaultwarden
+      # for vaultwarden(vw = 8687 ascii)
       - '8687:8687/tcp'
     networks:
       - caddy
