@@ -12,11 +12,8 @@ server:
 
 common:
   instance_addr: 127.0.0.1
+  # the URL path prefix for the API
   path_prefix: /loki
-  # storage:
-  #   filesystem:
-  #     chunks_directory: /loki/chunks
-  #     rules_directory: /loki/rules
   replication_factor: 1
   ring:
     kvstore:
@@ -26,7 +23,8 @@ common:
 
 storage_config:
   filesystem:
-    directory: /loki/chunks
+    # where all filesystem storage will be saved
+    directory: /loki
 
 
 
