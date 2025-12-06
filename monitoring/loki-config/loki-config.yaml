@@ -1,0 +1,58 @@
+auth_enabled: false
+
+
+
+server:
+  http_listen_port: 3100  # Main HTTP API port
+  grpc_listen_port: 9096  # gRPC interface port
+  log_level: info         # Loki's own logging level
+  grpc_server_max_concurrent_streams: 1000
+
+
+
+common:
+  instance_addr: 127.0.0.1
+  path_prefix: /loki
+  # storage:
+  #   filesystem:
+  #     chunks_directory: /loki/chunks
+  #     rules_directory: /loki/rules
+  replication_factor: 1
+  ring:
+    kvstore:
+      store: inmemory
+
+
+
+storage_config:
+  filesystem:
+    directory: /loki/chunks
+
+
+
+schema_config:
+  # NOTE: TSDB is recommended index store as of 2025-12-07
+  # REF: https://grafana.com/docs/loki/latest/configure/storage/
+  configs:
+    - from: 2020-10-24
+      store: tsdb
+      object_store: filesystem
+      schema: v13
+      index:
+        prefix: index_
+        period: 24h
+
+
+
+limits_config:
+  retention_period: 30d
+
+
+
+# NOTE: filesystem deletes chunks over time
+# REF: https://grafana.com/docs/loki/latest/configure/storage/
+compactor:
+  working_directory: /tmp/loki/retention
+  retention_enabled: true
+  retention_delete_delay: 2h
+  delete_request_store: filesystem

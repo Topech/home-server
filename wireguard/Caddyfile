@@ -57,3 +57,16 @@ https://vpn.grumpy-gnome.club:5052 {
 	reverse_proxy host.docker.internal:9090
 }
 
+
+# === loki ===
+https://localhost:7675,
+https://vpn.grumpy-gnome.club:7675 {
+	reverse_proxy host.docker.internal:3100
+}
+
+
+# === alloy ===
+https://localhost:6576,
+https://vpn.grumpy-gnome.club:6576 {
+	reverse_proxy host.docker.internal:12345
+}

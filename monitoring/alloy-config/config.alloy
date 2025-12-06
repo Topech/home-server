@@ -1,0 +1,67 @@
+// REF: https://grafana.com/docs/alloy/latest/tutorials/send-logs-to-loki/
+
+livedebugging {
+  enabled = true
+}
+
+
+local.file_match "var_logs" {
+  path_targets = [{"__path__" = "/host/var/log/*.log"}]
+  sync_period = "5s"
+}
+
+
+local.file_match "jellyfin_logs" {
+  path_targets = [{"__path__" = "/host/var/log/jellyfin/*.log"}]
+  sync_period = "5s"
+}
+ 
+
+loki.source.file "var_log_scrape" {
+  targets    = local.file_match.var_logs.targets
+  // forward_to = [loki.process.filter_logs.receiver]
+  // forward_to = [loki.process.local_file_label.receiver]
+  forward_to = [loki.write.grafana_loki.receiver]
+  tail_from_end = true
+}
+
+
+loki.source.file "jellyfin_log_scrape" {
+  targets    = local.file_match.jellyfin_logs.targets
+  forward_to = [loki.write.grafana_loki.receiver]
+  tail_from_end = true
+}
+
+
+// loki.process "filter_logs" {
+//   stage.drop {
+//     source = ""
+//     expression  = ".*Connection closed by authenticating user root"
+//     drop_counter_reason = "noisy"
+//   }
+//   forward_to = [loki.process.local_file_label.receiver]
+// }
+
+
+loki.process "local_file_label" {
+  stage.static_labels {
+    values = { "source" = "local_file" }
+  }
+  forward_to = [loki.write.grafana_loki.receiver]
+}
+
+
+loki.write "grafana_loki" {
+  endpoint {
+    url = "http://loki:3100/loki/api/v1/push"
+
+    // basic_auth {
+    //  username = "admin"
+    //  password = "admin"
+    // }
+  }
+}
+
+
+// TODO: listen on HTTP for logs
+// REF: https://grafana.com/docs/alloy/latest/tutorials/processing-logs/

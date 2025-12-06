@@ -28,6 +28,10 @@ services:
       - '7170:7170/tcp'
       # for prometheus (pr = 5052 ascii)
       - '5052:5052/tcp'
+      # for loki (lk = 7675 ascii)
+      - '7675:7675/tcp'
+      # for alloy (al = 6576 ascii)
+      - '6576:6576/tcp'
     networks:
       - caddy
     extra_hosts:
