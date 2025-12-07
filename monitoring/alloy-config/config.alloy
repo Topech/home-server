@@ -5,31 +5,36 @@ livedebugging {
 }
 
 
-local.file_match "var_logs" {
-  path_targets = [{"__path__" = "/host/var/log/*.log"}]
-  sync_period = "5s"
-}
-
-
-local.file_match "jellyfin_logs" {
-  path_targets = [{"__path__" = "/host/var/log/jellyfin/*.log"}]
+local.file_match "local_files" {
+  // NOTE: all non-dunder fields are added as labels
+  path_targets = [
+    {"__path__" = "/host/var/log/*.log", job = "local.file_match.local_files"},
+    {"__path__" = "/host/var/log/jellyfin/*.log", job = "local.file_match.local_files"},
+  ]
   sync_period = "5s"
 }
  
 
-loki.source.file "var_log_scrape" {
-  targets    = local.file_match.var_logs.targets
-  // forward_to = [loki.process.filter_logs.receiver]
-  // forward_to = [loki.process.local_file_label.receiver]
+loki.source.file "host_var_log_scrape" {
+  targets    = local.file_match.local_files.targets
   forward_to = [loki.write.grafana_loki.receiver]
   tail_from_end = true
 }
 
 
-loki.source.file "jellyfin_log_scrape" {
-  targets    = local.file_match.jellyfin_logs.targets
+loki.source.journal "host_journal_scrape" {
+  path = "/host/run/log/journal"
   forward_to = [loki.write.grafana_loki.receiver]
-  tail_from_end = true
+  relabel_rules = loki.relabel.journal_unit_relabel.rules
+}
+
+
+loki.relabel "journal_unit_relabel" {
+  forward_to = []
+  rule {
+    source_labels = ["__journal__systemd_unit"]
+    target_label  = "unit"
+  }
 }
 
 
@@ -42,13 +47,6 @@ loki.source.file "jellyfin_log_scrape" {
 //   forward_to = [loki.process.local_file_label.receiver]
 // }
 
-
-loki.process "local_file_label" {
-  stage.static_labels {
-    values = { "source" = "local_file" }
-  }
-  forward_to = [loki.write.grafana_loki.receiver]
-}
 
 
 loki.write "grafana_loki" {

@@ -53,6 +53,7 @@ services:
       - ./alloy-config/config.alloy:/etc/alloy/config.alloy:ro
       - alloy-data:/var/lib/alloy/data
       - /var/log:/host/var/log:ro
+      - /run/log/journal:/host/run/log/journal:ro
     command: 'run --server.http.listen-addr=0.0.0.0:12345 --storage.path=/var/lib/alloy/data /etc/alloy/config.alloy'
 
 
