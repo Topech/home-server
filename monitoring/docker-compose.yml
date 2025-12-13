@@ -9,9 +9,12 @@ services:
     environment:
       - GF_SECURITY_ADMIN_USER=${GRAFANA_USER}
       - GF_SECURITY_ADMIN_PASSWORD=${GRAFANA_PASSWORD}
+      - GRAFANA_SMTP_USER
+      - GRAFANA_SMTP_PASSWORD
     volumes:
       - grafana-data:/var/lib/grafana
-      - ./grafana-config/datasource.yml:/etc/grafana/provisioning/datasources/datasource.yml
+      - ./grafana-config/datasource.yml:/etc/grafana/provisioning/datasources/datasource.yml:ro
+      - ./grafana-config/grafana.ini:/etc/grafana/grafana.ini:ro
 
 
   prometheus:
@@ -63,3 +66,4 @@ volumes:
   grafana-data:
   loki-data:
   alloy-data:
+
