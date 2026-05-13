@@ -1,0 +1,13 @@
+services:
+
+  lidarr:
+    image: ghcr.io/hotio/lidarr
+    container_name: lidarr
+    ports:
+      # 0d7682 = LR (ascii)
+      - "8686:8686"
+    environment:
+      - TZ=Etc/UTC
+      - WEBUI_PORTS=8686/tcp
+    volumes:
+      - ./lidarr/data:/data

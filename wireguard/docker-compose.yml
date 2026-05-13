@@ -32,6 +32,8 @@ services:
       - '7675:7675/tcp'
       # for alloy (al = 6576 ascii)
       - '6576:6576/tcp'
+      # for lidarr (lr = 7682 ascii)
+      - '7682:7682/tcp'
     networks:
       - caddy
     extra_hosts:

@@ -70,3 +70,10 @@ https://localhost:6576,
 https://vpn.grumpy-gnome.club:6576 {
 	reverse_proxy host.docker.internal:12345
 }
+
+
+# === Lidarr ===
+https://localhost:7682,
+https://vpn.grumpy-gnome.club:7682 {
+	reverse_proxy host.docker.internal:8686
+}
