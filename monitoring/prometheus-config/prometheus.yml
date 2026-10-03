@@ -26,6 +26,17 @@ scrape_configs:
     static_configs:
       - targets: ['host.docker.internal:9100']
 
+  - job_name: grand-positor-node-exporter
+    static_configs:
+      - targets: ['192.168.1.12:9100']
+
+  - job_name: grand-positor-llama-cpp
+    metrics_path: /metrics
+    params:
+      model:
+        - 'default'
+    static_configs:
+      - targets: ['192.168.1.12:8080']
 
   - job_name: loki
     metrics_path: /metrics
