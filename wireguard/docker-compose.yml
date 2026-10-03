@@ -16,6 +16,8 @@ services:
     ports:
       # caddy admin portal
       - '2019:2019/tcp'
+      # default (for domain name routing)
+      - '443:443/tcp'
      # wg-easy (wg = 4757 ascii)
       - '47571:47571/tcp'
       # for couchdb

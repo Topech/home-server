@@ -25,6 +25,7 @@ https://localhost:47571 {
 }
 
 # === obsidian-livesync ===
+https://obsidian-livesync.vpn.grumpy-gnome.club,
 https://localhost:5985,
 https://vpn.grumpy-gnome.club:5985 {
 	reverse_proxy host.docker.internal:5984
@@ -32,6 +33,7 @@ https://vpn.grumpy-gnome.club:5985 {
 
 
 # === jellyfin ===
+https://jellyfin.vpn.grumpy-gnome.club,
 https://localhost:7074,
 https://vpn.grumpy-gnome.club:7074,
 https://grumpy-gnome.club:7074 {
@@ -40,18 +42,21 @@ https://grumpy-gnome.club:7074 {
 
 
 # === vaultwarden ===
+https://vaultwarden.vpn.grumpy-gnome.club,
 https://vpn.grumpy-gnome.club:8687 {
 	reverse_proxy host.docker.internal:18687
 }
 
 
 # === grafana ===
+https://grafana.vpn.grumpy-gnome.club,
 https://localhost:7170,
 https://vpn.grumpy-gnome.club:7170 {
 	reverse_proxy host.docker.internal:3000
 }
 
 # === prometheus ===
+https://prometheus.vpn.grumpy-gnome.club,
 https://localhost:5052,
 https://vpn.grumpy-gnome.club:5052 {
 	reverse_proxy host.docker.internal:9090
@@ -59,6 +64,7 @@ https://vpn.grumpy-gnome.club:5052 {
 
 
 # === loki ===
+https://loki.vpn.grumpy-gnome.club,
 https://localhost:7675,
 https://vpn.grumpy-gnome.club:7675 {
 	reverse_proxy host.docker.internal:3100
@@ -66,6 +72,7 @@ https://vpn.grumpy-gnome.club:7675 {
 
 
 # === alloy ===
+https://alloy.vpn.grumpy-gnome.club,
 https://localhost:6576,
 https://vpn.grumpy-gnome.club:6576 {
 	reverse_proxy host.docker.internal:12345
@@ -73,7 +80,9 @@ https://vpn.grumpy-gnome.club:6576 {
 
 
 # === Lidarr ===
+https://lidarr.vpn.grumpy-gnome.club,
 https://localhost:7682,
 https://vpn.grumpy-gnome.club:7682 {
 	reverse_proxy host.docker.internal:8686
 }
+
